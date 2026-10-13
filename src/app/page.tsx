@@ -1,11 +1,13 @@
-import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { services } from "@/content/services";
-import { industryExamples } from "@/content/industries";
-import { processSteps } from "@/content/process";
-import { CtaSection } from "@/components/CtaSection";
-import { CoreFigure } from "@/components/core/CoreFigure";
+import { ContactForm } from "@/components/ContactForm";
 import { JsonLd } from "@/components/JsonLd";
+import { Reveal } from "@/components/desktop/Reveal";
+import { Faq } from "@/components/home/Faq";
+import { Features } from "@/components/home/Features";
+import { Hero } from "@/components/home/Hero";
+import { HowWeWork } from "@/components/home/HowWeWork";
+import { ProcessSky } from "@/components/home/ProcessSky";
+import { StudioNotes } from "@/components/home/StudioNotes";
 import { organizationId, organizationJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = {
@@ -31,96 +33,33 @@ export default function HomePage() {
     },
   ];
 
-  const industryNames = industryExamples.map((i) => i.name.toLowerCase());
-
   return (
-    <>
+    <div className="canvas">
       <JsonLd data={jsonLd} />
+      <Hero />
+      <Features />
+      <StudioNotes />
+      <HowWeWork />
+      <ProcessSky />
+      <Faq />
 
-      <section id="hero" className="border-b border-line">
-        <div className="container-page grid grid-cols-1 items-center gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-6 lg:py-24">
-          <div className="min-w-0">
-            <h1 className="max-w-3xl text-4xl leading-[1.08] sm:text-5xl lg:text-6xl">
-              We build websites, apps and software for businesses of any size, in any industry.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8">
-              Some clients come to us with an idea and nothing else. Others have a business that has outgrown its
-              website or its spreadsheets. We plan the work with you, build it, launch it, and keep improving it
-              afterwards. That includes 3D and interactive websites like this one. We work remotely, with clients in
-              any country.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={siteConfig.cta.href} className="btn-primary">{siteConfig.cta.label}</Link>
-              <Link href="/services" className="btn-secondary">See our services</Link>
-            </div>
-          </div>
-          <CoreFigure mode="hero" progressFrom="hero" className="mx-auto max-w-[18rem] sm:max-w-sm lg:max-w-none" />
-        </div>
-      </section>
-
-      <section aria-labelledby="services-heading" className="py-16 sm:py-20">
-        <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-          <div>
-            <h2 id="services-heading" className="text-2xl">What we do</h2>
-            <p className="mt-3">
-              These services cover most projects. Many clients use two or three together, for example a website with SEO,
-              or an app with the system behind it.
-            </p>
-            <p className="mt-3">
-              <Link href="/services#other-projects" className="link">Projects outside these six</Link>
+      <section id="contact" aria-labelledby="contact-heading" className="px-5 pb-24 pt-10 lg:pb-32">
+        <div className="mx-auto max-w-[1090px] border-t-2 border-dotted border-black/10 pt-[61px]">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <span className="badge">contact</span>
+            <h2 id="contact-heading" className="mt-6 text-[34px] leading-[1.2] tracking-[-1.02px] lg:text-[56px] lg:tracking-[-1.68px]">
+              start a project
+            </h2>
+            <p className="max-w-[520px] text-[16px] tracking-[-0.48px] lg:text-[18px] lg:tracking-[-0.54px]">
+              a few sentences is enough. we reply within {siteConfig.replyTime} with questions, first thoughts and a time for a
+              call.
             </p>
           </div>
-          <dl className="divide-y divide-line border-y border-line">
-            {services.map((s) => (
-              <div key={s.slug} className="grid grid-cols-1 gap-1 py-5 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-6">
-                <dt>
-                  <Link href={`/services#${s.slug}`} className="link">{s.title}</Link>
-                </dt>
-                <dd>{s.short}</dd>
-              </div>
-            ))}
-          </dl>
+          <Reveal className="mx-auto mt-12 max-w-[834px]">
+            <ContactForm headingLevel="h3" />
+          </Reveal>
         </div>
       </section>
-
-      <section aria-labelledby="clients-heading" className="bg-surface py-16 sm:py-20">
-        <div className="container-page max-w-4xl">
-          <h2 id="clients-heading" className="text-2xl">Who we work with</h2>
-          <p className="mt-4 text-lg leading-8">
-            Our clients range from people starting their first business to large organisations replacing old systems.
-            They work in {industryNames.slice(0, -1).join(", ")} and {industryNames.at(-1)}, and in many fields not on
-            that list. What they share is the need to be found online, to look credible, and to spend less time on
-            repetitive work.
-          </p>
-          <p className="mt-4">
-            <Link href="/services#industries" className="link">Examples of projects by industry</Link>
-          </p>
-        </div>
-      </section>
-
-      <section aria-labelledby="process-heading" className="py-16 sm:py-20">
-        <div className="container-page">
-          <h2 id="process-heading" className="text-2xl">How a project runs</h2>
-          <ol className="mt-8 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-6">
-            {processSteps.map((step, i) => (
-              <li key={step.title} className="min-w-0 border-t-2 border-muted pt-3">
-                <p className="text-sm text-muted">{String(i + 1).padStart(2, "0")}</p>
-                <h3 className="mt-1 text-lg">{step.title}</h3>
-                <p className="mt-1 text-sm">{step.summary}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-8">
-            Every project starts with Discovery and a written proposal, so you know the scope and cost before any work
-            begins. <Link href="/process" className="link">Read the full process</Link>
-          </p>
-        </div>
-      </section>
-
-      <CtaSection
-        title="Tell us what you want to build"
-        text={`Send a short description of your project. We reply within ${siteConfig.replyTime} with questions, first thoughts, and a time for a call.`}
-      />
-    </>
+    </div>
   );
 }

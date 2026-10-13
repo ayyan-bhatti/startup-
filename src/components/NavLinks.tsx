@@ -4,19 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 
-/** Desktop navigation. A client component only so the current page can be marked. */
+/** Menu bar links. A client component only so the current page can be marked. */
 export function NavLinks() {
   const pathname = usePathname();
   return (
-    <ul className="flex items-center gap-7">
+    <ul className="flex items-center gap-4 text-[14px] leading-none tracking-[-0.42px]">
       {siteConfig.nav.map((item) => (
         <li key={item.href}>
           <Link
             href={item.href}
             aria-current={pathname === item.href ? "page" : undefined}
-            className="py-2 text-sm text-body underline-offset-8 transition-colors duration-150 hover:text-ink aria-[current=page]:font-semibold aria-[current=page]:text-ink aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-2"
+            className="inline-block py-2 text-black/55 transition-[color,transform] duration-[120ms] hover:text-black active:scale-[0.97] aria-[current=page]:text-black"
           >
-            {item.label}
+            {item.label.toLowerCase()}
           </Link>
         </li>
       ))}

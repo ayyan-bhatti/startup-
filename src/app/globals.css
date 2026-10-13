@@ -1,42 +1,71 @@
 @import "tailwindcss";
 
-/* Design tokens. See docs/style-guide.md and docs/experience-plan.md. */
+/*
+ * Design tokens, measured from the reference (see docs/desktop-plan.md): a light grey desk, black type in one
+ * sans family, glossy "aqua" pills and brushed-metal windows. Usage rules are in docs/style-guide.md.
+ */
 @theme {
-  --color-base: #14110e;
-  --color-surface: #1c1915;
-  --color-surface-2: #26221c;
-  --color-line: #3b352d;
-  --color-ink: #f3ece1;
-  --color-body: #d3cabc;
-  --color-muted: #a39886;
-  --color-accent: #f0a54a;
-  --color-accent-hover: #f7c27e;
-  --color-on-accent: #1a1207;
-  --color-danger: #ff9b8a;
-  --color-success: #a6d9a8;
+  --color-desk: #f5f5f5;
+  --color-window: #ffffff;
+  --color-chrome: #ececed;
+  --color-frame: #8a8a8a;
+  --color-surface: #ffffff;
+  --color-surface-2: #ececed;
+  --color-line: #e3e3e3;
 
-  --radius: 6px;
+  --color-ink: #000000;
+  --color-body: #4a4a4a;
+  --color-muted: #5f5f5f;
+  --color-faint: #8c8c8c;
+
+  /* The main action is a blue aqua pill with black text. */
+  --color-accent: #a2c7ff;
+  --color-accent-hover: #b7d4ff;
+  --color-on-accent: #000000;
+  --color-link: #0a5fd1;
+  --color-link-hover: #07479d;
+  --color-select: #0f7fff;
+  --color-on-select: #ffffff;
+
+  --color-danger: #b42318;
+  --color-success: #17803d;
+
+  --color-term: #1d1d1f;
+  --color-term-ink: #f2f2f2;
+  --color-term-dim: #a1a1a6;
+  --color-term-ok: #7fe0a0;
+
+  --radius: 8px;
+  --radius-window: 8px;
 
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display-face), var(--font-body), ui-sans-serif, sans-serif;
+  --font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  /* Motion system. Mirrored in src/lib/motion.ts. */
   --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-move: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 150ms;
-  --dur-base: 300ms;
-  --dur-slow: 900ms;
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur-base: 350ms;
+  --dur-slow: 450ms;
 }
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
+    /* 1px on a 1440px-wide canvas, scaled down proportionally on narrower desktops. */
+    --u: min(1px, calc(100vw / 1440));
+    --shadow-drop: drop-shadow(0 10px 12px rgb(0 0 0 / 0.12));
+    --shadow-float: 0 10px 24px rgb(0 0 0 / 0.12);
+    --shadow-card: 0 4px 12px rgb(0 0 0 / 0.08);
+    --gloss-top: inset 0 1px 1px rgb(255 255 255 / 0.8);
+    --metal: linear-gradient(90deg, #d6d5d7 0%, #f0f0f0 50%, #d6d5d7 100%);
+    --metal-edge: linear-gradient(#000 0%, rgb(0 0 0 / 0.1) 100%);
   }
   html {
     scroll-behavior: smooth;
-    background: var(--color-base);
+    background: var(--color-desk);
   }
-  /* Smooth scrolling library manages scrolling itself when active. */
   html.lenis,
   html.lenis body {
     height: auto;
@@ -45,25 +74,26 @@
     scroll-behavior: auto !important;
   }
   body {
-    @apply bg-base text-body antialiased;
+    @apply bg-desk text-ink antialiased;
+    letter-spacing: -0.03em;
     overflow-wrap: anywhere;
   }
   h1,
   h2,
   h3 {
-    @apply font-display font-semibold text-ink;
+    @apply font-medium text-ink;
     overflow-wrap: anywhere;
     text-wrap: balance;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.03em;
   }
   ::selection {
-    @apply bg-accent text-on-accent;
+    @apply bg-select text-on-select;
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-accent;
+    @apply outline-2 outline-offset-2 outline-select;
   }
   [id] {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 4.5rem;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -74,79 +104,353 @@
     *::after {
       transition-duration: 0s !important;
       animation-duration: 0s !important;
+      animation-delay: 0s !important;
       animation-iteration-count: 1 !important;
     }
   }
 }
 
 @utility container-page {
-  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;
 }
-@utility btn {
-  @apply inline-flex min-h-11 max-w-full items-center justify-center px-5 py-2.5 text-center text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60;
-  border-radius: var(--radius);
-  transition:
-    background-color var(--dur-fast) var(--ease-move),
-    border-color var(--dur-fast) var(--ease-move),
-    transform var(--dur-fast) var(--ease-move);
-  &:active:not(:disabled) {
-    transform: translateY(1px);
-  }
+@utility container-wide {
+  @apply mx-auto w-full max-w-[90rem] px-5 sm:px-6;
 }
-@utility btn-primary {
-  @apply btn bg-accent text-on-accent hover:bg-accent-hover;
-}
-@utility btn-secondary {
-  @apply btn border border-line text-ink hover:border-muted hover:bg-surface-2;
-}
-@utility link {
-  @apply font-semibold text-accent underline-offset-4 hover:text-accent-hover hover:underline;
-  transition: color var(--dur-fast) var(--ease-move);
-}
-@utility field {
-  @apply mt-2 block w-full min-w-0 border border-line bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-muted hover:border-muted focus:border-accent focus:outline-2 focus:outline-offset-0 focus:outline-accent aria-[invalid=true]:border-danger;
-  border-radius: var(--radius);
+/* The dotted desk. */
+@utility desk-dots {
+  background-color: var(--color-desk);
+  background-image: radial-gradient(rgb(0 0 0 / 0.13) 1px, transparent 1.3px);
+  background-size: 34.24px 34px;
 }
 
-/* A single slow pulse of the core, used to confirm a sent enquiry. */
-@keyframes core-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  40% {
-    transform: scale(1.18);
+/* ---- Aqua pills (buttons, badges, speech bubbles) ---- */
+@utility pill {
+  @apply relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full font-medium text-ink select-none;
+  height: 40px;
+  padding: 0 20px 1px;
+  font-size: 18px;
+  letter-spacing: -0.54px;
+  text-shadow: 0 2px 2px rgb(255 255 255 / 0.8);
+  box-shadow: var(--shadow-float);
+  transition:
+    transform var(--dur-fast),
+    opacity 0.15s;
+  &:hover {
     opacity: 0.85;
   }
-  100% {
-    transform: scale(1);
-    opacity: 1;
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  /* Highlight and shading, drawn rather than imaged. */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 12px;
+    right: 12px;
+    height: 40%;
+    max-height: 13px;
+    border-radius: 999px;
+    background: linear-gradient(rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.15));
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 -15px 2px -12px rgb(255 255 255 / 0.3);
+    pointer-events: none;
+  }
+}
+@utility pill-blue {
+  @apply pill;
+  background: linear-gradient(#edf4ff 0%, #d6e7ff 18%, #a2c7ff 50%, #99cbf8 80%, #a2d2f7 100%);
+  border: 1px solid #221898;
+}
+@utility pill-grey {
+  @apply pill;
+  background: linear-gradient(#fbfbfb 0%, #ededed 42%, #e4e4e4 100%);
+  border: 1px solid #626262;
+}
+@utility pill-orange {
+  @apply pill;
+  background: linear-gradient(#ffe9d6 0%, #ffc999 42%, #ffe9d6 100%);
+  border: 1px solid #9a5518;
+}
+@utility pill-teal {
+  @apply pill;
+  background: linear-gradient(#d6fffb 0%, #4fd8c6 42%, #d6fffb 100%);
+  border: 1px solid #158479;
+}
+@utility pill-pink {
+  @apply pill;
+  background: linear-gradient(#ffe0f0 0%, #ffb3d6 42%, #ffe0f0 100%);
+  border: 1px solid #a3306a;
+}
+@utility pill-green {
+  @apply pill;
+  background: linear-gradient(#e3ffd6 0%, #a9e88f 42%, #e3ffd6 100%);
+  border: 1px solid #3f7a1d;
+}
+@utility badge {
+  @apply relative inline-flex items-center justify-center rounded-full font-medium uppercase;
+  height: 28px;
+  padding: 0 12px 1px;
+  font-size: 12px;
+  letter-spacing: -0.36px;
+  color: rgb(0 0 0 / 0.6);
+  text-shadow: 0 2px 2px rgb(255 255 255 / 0.8);
+  background: linear-gradient(#fff 0%, #e7e7e7 42%, #fbfbfb 100%);
+  border: 1px solid rgb(0 0 0 / 0.3);
+}
+
+/* Legacy names used by inner pages, mapped onto the pills. */
+@utility btn {
+  @apply pill;
+}
+@utility btn-primary {
+  @apply pill-blue;
+}
+@utility btn-secondary {
+  @apply pill-grey;
+}
+@utility link {
+  @apply font-medium text-link underline decoration-link/30 underline-offset-4 hover:text-link-hover hover:decoration-link-hover;
+  transition: color var(--dur-fast);
+}
+@utility field {
+  @apply mt-2 block w-full min-w-0 rounded-md border border-[#9a9a9a] bg-white px-3.5 py-2.5 text-base text-ink placeholder:text-faint hover:border-[#6f6f6f] focus:border-select focus:outline-2 focus:outline-offset-0 focus:outline-select aria-[invalid=true]:border-danger;
+}
+@utility chip {
+  @apply inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-full border border-[#8a8a8a] px-3 text-xs font-medium text-ink;
+  background: linear-gradient(#fbfbfb 0%, #ededed 42%, #e4e4e4 100%);
+  transition: transform var(--dur-fast);
+  &:active {
+    transform: scale(0.96);
+  }
+  &[aria-pressed="true"],
+  &[aria-selected="true"] {
+    border-color: #221898;
+    background: linear-gradient(#edf4ff 0%, #d6e7ff 18%, #a2c7ff 50%, #99cbf8 80%, #a2d2f7 100%);
+  }
+}
+
+@layer components {
+/* The notes window: a metal frame washed with yellow. */
+.aqua-notes {
+  position: relative;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(90deg, rgb(254 234 61 / 0.2), rgb(254 234 61 / 0.2)) padding-box,
+    var(--metal) padding-box,
+    var(--metal-edge) border-box;
+  box-shadow: var(--shadow-float);
+}
+.aqua-notes::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--gloss-top);
+  pointer-events: none;
+}
+/* ---- Windows ---- */
+/* Brushed-metal frame with a gradient edge. */
+.aqua {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 4px 4px;
+  background:
+    var(--metal) padding-box,
+    var(--metal-edge) border-box;
+  filter: var(--shadow-drop);
+}
+.aqua::after {
+  content: "";
+  position: absolute;
+  inset: -0.5px;
+  border-radius: inherit;
+  box-shadow: var(--gloss-top);
+  pointer-events: none;
+}
+.aqua-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px 8px;
+  min-height: 20px;
+}
+.aqua-title {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  max-width: 60%;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.36px;
+  color: rgb(0 0 0 / 0.6);
+  text-shadow: 0 1px 1px rgb(255 255 255 / 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.aqua-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e9e8ea;
+}
+/* Cards with a thin tinted title bar. */
+.card-win {
+  position: relative;
+  overflow: clip;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow-card);
+}
+.card-win::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--metal-edge);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box exclude,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box exclude,
+    linear-gradient(#fff 0 0);
+  pointer-events: none;
+}
+.win-caption {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: -0.36px;
+  color: rgb(0 0 0 / 0.6);
+  text-shadow: 0 1px 1px rgb(255 255 255 / 0.8);
+}
+
+/* Entrances: the hero rises in item by item; section content reveals once. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+.rise-in {
+  animation: rise-in 0.45s ease-out var(--d, 0.11s) backwards;
+}
+@keyframes win-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+@keyframes win-out {
+  to {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.win-enter {
+  animation: win-in 0.3s var(--ease-settle) both;
+}
+.win-exit {
+  animation: win-out 0.16s var(--ease-move) both;
+  pointer-events: none;
+}
+[data-reveal="pending"] {
+  opacity: 0;
+  translate: 0 12px;
+}
+[data-reveal="done"] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.5s ease-out,
+    translate 0.6s var(--ease-settle);
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.caret {
+  animation: caret 0.8s steps(1) infinite;
+}
+@keyframes core-pulse {
+  40% {
+    transform: scale(1.18);
   }
 }
 .core-pulse {
-  animation: core-pulse var(--dur-slow) var(--ease-settle) 1;
+  animation: core-pulse 0.9s var(--ease-settle) 1;
   transform-origin: center;
   transform-box: fill-box;
 }
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Zoomed window (modal) and bottom sheets. */
+dialog.zoom {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100svh - 32px);
+  overflow: visible;
+}
+dialog.zoom::backdrop {
+  background: rgb(245 245 245 / 0.75);
+  backdrop-filter: blur(2px);
+  animation: fade-in 0.25s ease-out;
+}
+dialog.zoom[open] {
+  animation: win-in 0.32s var(--ease-settle);
+}
+dialog.sheet {
+  margin: auto 0 0;
+  max-width: 100%;
+  width: 100%;
+  max-height: 92svh;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+dialog.sheet::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+}
 
 @media print {
-  :root {
-    color-scheme: light;
-  }
   html,
   body {
     background: #fff !important;
-    color: #000 !important;
-  }
-  h1,
-  h2,
-  h3,
-  p,
-  li,
-  dt,
-  dd,
-  td,
-  th {
     color: #000 !important;
   }
   header,
@@ -155,8 +459,24 @@
   .no-print {
     display: none !important;
   }
-  a {
-    color: #000 !important;
-    text-decoration: underline;
+}
+
+/* The home canvas: designed at 1440px, zoomed to fit between 1024px and 1440px. */
+@media (min-width: 1024px) {
+  .canvas {
+    width: 1440px;
+    margin-inline: auto;
+    zoom: var(--z, 1);
   }
 }
+
+@keyframes wave {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+

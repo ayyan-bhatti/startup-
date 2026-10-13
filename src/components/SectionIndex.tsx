@@ -26,7 +26,7 @@ export function SectionIndex({ items }: { items: { id: string; label: string }[]
           <a
             href={`#${item.id}`}
             aria-current={active === item.id ? "location" : undefined}
-            className="-ml-px block border-l-2 border-transparent py-1 pl-3 transition-colors duration-[var(--dur-fast)] hover:text-ink aria-[current=location]:border-accent aria-[current=location]:text-ink"
+            className="-ml-px block border-l-2 border-transparent py-1 pl-3 transition-colors duration-[var(--dur-fast)] hover:text-ink aria-[current=location]:border-select aria-[current=location]:text-ink"
           >
             {item.label}
           </a>

@@ -1,7 +1,7 @@
 /** Motion system. Mirrors the CSS custom properties in globals.css. See docs/experience-plan.md. */
 export const motion = {
   durFast: 150,
-  durBase: 300,
+  durBase: 260,
   durSlow: 900,
   /** Per-second rate for frame-rate independent damping. Higher follows the input faster. */
   damping: 4,

@@ -26,6 +26,7 @@ export const siteConfig = {
   socials: [] as string[],
   nav: [
     { href: "/services", label: "Services" },
+    { href: "/#work", label: "Work" },
     { href: "/process", label: "Process" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },

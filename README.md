@@ -5,7 +5,7 @@ Marketing website for Core, a digital partner that helps businesses of every ind
 - 5 pages: Home, Services (including an "Anything else" section and an "Every industry" section at `/services#industries`), About, Process, Contact (plus a custom 404)
 - Contact form (name, email, phone (optional, international), business name, industry (free text), service, message) with client- and server-side validation, a honeypot field, and two Resend emails (visitor confirmation + internal notification)
 - SEO: per-page metadata, canonical URLs, Open Graph/Twitter cards, a generated OG image, sitemap, robots, JSON-LD and a web manifest
-- Everything is server-rendered except the contact form and the mobile menu
+- Every page is server-rendered. The desktop windows, service demos, contact form and mobile menu add interactivity in the browser (see `docs/desktop-plan.md`)
 
 ## 1. Install
 
@@ -64,6 +64,9 @@ npm run lint       # ESLint, fails on any warning
 - `src/lib/contact.ts` holds the service dropdown options and the validation shared by the browser and `src/app/api/contact/route.ts`. There is no budget field.
 - The notification email includes name, email, phone, business name, industry, service, message and timestamp. The visitor confirmation includes a short summary (business, industry, service, message).
 - A hidden `website` field acts as a honeypot. If it is filled in, the API returns success without sending anything.
+- The form also sends how long it was open. Anything sent within 2.5 seconds is treated the same way as the honeypot.
+- Valid enquiries are limited to 5 per IP address per 10 minutes. The count is kept in memory, so on Vercel each server instance counts separately: it stops repeated sends, not a determined attack.
+- Links from a service window go to `/contact?service=...`, which pre-selects that service in the form.
 - The internal notification is sent first with `replyTo` set to the visitor's email, so you can reply directly. If it fails, the visitor sees an error.
 - The visitor confirmation is sent second. If only that one fails, the error is logged and the visitor still sees success, because the enquiry already reached you.
 - All user input is HTML-escaped in `src/lib/email-templates.ts`.
@@ -73,12 +76,16 @@ npm run lint       # ESLint, fails on any warning
 ```
 src/
   config/site.ts          ← name, tagline, domain, email, nav (edit this first)
-  content/                ← services, industry examples and process copy
+  content/                ← services, industry examples, process, about and work copy
+docs/desktop-plan.md      ← the desktop concept and how the window system works
 docs/rnd-report.md        ← research, positioning and SEO plan
 docs/style-guide.md       ← terminology, tone, design tokens and components (read before editing copy or styles)
 docs/quality-audit.md     ← quality audit and how each issue was fixed
   app/                    ← pages, API route, sitemap, robots, manifest, icons, OG image
-  components/             ← header, footer, CTA, contact form, mobile menu
+  components/             ← header (menu bar), footer, CTA, contact form, mobile menu
+    desktop/              ← window frame, window manager (drag, stack, focus), icons, reveal
+    home/                 ← hero, terminal, work browser, about windows, process assistant
+    services/             ← service apps and their interactive demos
   lib/                    ← SEO helpers, validation, email templates, OG renderer
 public/                   ← static images
 ```
@@ -96,5 +103,5 @@ The accent color is set once in `src/app/globals.css` under `@theme` (`--color-a
 - [ ] **Colors:** `@theme` in `src/app/globals.css`, plus `themeColor` in `src/app/layout.tsx` and `src/app/manifest.ts`, and the hex values in the OG/icon files
 - [ ] **Copy:** `src/content/services.ts`, `src/content/industries.ts`, `src/content/process.ts`, and page text in `src/app/*/page.tsx`
 - [ ] **Service dropdown:** `src/lib/contact.ts`
-- [ ] **Hero illustration:** `public/hero-illustration.svg` (keep the width/height in sync if you swap it)
+- [ ] **Work:** add real projects (with permission) to `src/content/work.ts`
 - [ ] **Keywords:** `keywords` in `src/app/layout.tsx`

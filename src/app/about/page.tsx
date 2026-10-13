@@ -4,21 +4,13 @@ import { CtaSection } from "@/components/CtaSection";
 import { JsonLd } from "@/components/JsonLd";
 import { PageIntro } from "@/components/PageIntro";
 import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
+import { beliefs, commitments } from "@/content/about";
 
 export const metadata = pageMetadata({
   title: "About us",
   description: `${siteConfig.name} builds websites, apps and software for clients in any industry, worldwide. How we work, what we commit to, and why we do not limit ourselves to one sector.`,
   path: "/about",
 });
-
-const commitments = [
-  { term: "A reply", detail: `Every enquiry gets a reply from us within ${siteConfig.replyTime}, including the ones we turn down.` },
-  { term: "A written proposal", detail: "Scope, timeline and cost are in writing before any work starts. If something changes, we tell you before it affects the cost." },
-  { term: "Regular previews", detail: "You see working progress throughout the project, not only at the end." },
-  { term: "One point of contact", detail: "You always know who to message, and you get an answer, not a ticket number." },
-  { term: "Your ownership", detail: "Code, designs, content, domain and accounts are set up in your name. If you leave, you take everything with you." },
-  { term: "Honest advice", detail: "If you do not need something yet, we say so, even when it means a smaller project for us." },
-];
 
 export default function AboutPage() {
   return (
@@ -34,23 +26,12 @@ export default function AboutPage() {
         <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           <h2 id="believe-heading" className="text-2xl">What we believe</h2>
           <div className="max-w-2xl space-y-4 text-lg leading-8">
-            <p>
-              Most businesses do not need more technology. They need fewer missed enquiries, fewer hours spent copying
-              data from one place to another, and a website that answers questions before anyone has to pick up the phone.
-            </p>
-            <p>
-              So we start with the problem, not the product. Sometimes the answer is a new app. Often it is a better
-              website, a booking form and three automated emails.
-            </p>
-            <p>
-              We work remotely with clients in any country, and we keep decisions and progress in writing so time zones
-              never slow a project down.
-            </p>
+            {beliefs.map((b) => <p key={b}>{b}</p>)}
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="commitments-heading" className="border-y border-line bg-surface py-16 sm:py-20">
+      <section aria-labelledby="commitments-heading" className="border-y border-frame/50 bg-chrome py-16 sm:py-20">
         <div className="container-page">
           <h2 id="commitments-heading" className="text-2xl">What you can expect from us</h2>
           <p className="mt-3 max-w-2xl">

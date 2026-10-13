@@ -53,25 +53,22 @@ Each page ends with exactly one call to action (except Contact, which is the act
 
 ## Design tokens
 
-Defined in `src/app/globals.css` under `@theme`.
+Defined in `src/app/globals.css`. Values are measured from the reference; see `docs/desktop-plan.md`.
 
 | Token | Value | Use |
 |---|---|---|
-| `ink` | `#1c1917` | Headings, primary text on light backgrounds, footer background |
-| `body` | `#44403c` | Body text |
-| `muted` | `#6b6560` | Secondary text, captions (5.6:1 on white) |
-| `line` | `#e7e3dd` | Borders and dividers |
-| `surface` | `#f7f5f2` | Alternate section background |
-| `accent` | `#1f5c45` | Primary buttons, links, focus ring (8:1 on white) |
-| `accent-hover` | `#17483a` | Hover and active state of accent |
-| `success` / `danger` | `#1f5c45` / `#a1281c` | Form result messages |
-| `--radius` | `6px` | The only corner radius |
+| `desk` | `#f5f5f5` | Page background; the hero adds the dot grid (`desk-dots`) |
+| `ink` | `#000` | Headings and primary text |
+| black at 60% / 55% / 50% | | Body copy, secondary text and captions (all 4.5:1 or better on the desk) |
+| `link` | `#0a5fd1` | Text links and the menu bar action (5.4:1 on the desk) |
+| `select` | `#0f7fff` | Focus ring and selection |
+| `danger` / `success` | `#b42318` / `#17803d` | Form results |
 
-- **Font:** Inter, weights 400 and 600 only.
-- **Type scale:** `text-sm` (captions, labels), `text-base` (body), `text-lg` (lead), `text-2xl` (H2), `text-4xl`/`text-5xl` (H1). H3 uses `text-lg font-semibold`.
-- **Spacing:** sections use `py-16 sm:py-20`; stacks use multiples of 4 from Tailwind's scale.
-- **No** shadows, gradients, blur, pills, or decorative images.
-- **Motion:** colour transitions only (150ms) on hover/focus. Disabled under `prefers-reduced-motion`.
+- **Type:** Inter 400/500 for everything. JetBrains Mono only in the dark note.
+- **Voice on Home:** lowercase headings, labels and buttons, matching the reference. Inner pages keep sentence case for long-form reading. Brand and service names keep their spelling in content files and are lowercased in CSS only where the design calls for it.
+- **Windows:** `.aqua` (metal frame), `.card-win` (white card with a tinted bar), `.aqua-notes` (yellow notes). Captions use `.win-caption`.
+- **Buttons:** `pill-blue` (main action), `pill-grey` (secondary), plus orange, teal, pink and green pills for speech bubbles. `badge` labels each section.
+- **Motion:** `rise-in` for entrances, `win-enter`/`win-exit` for windows, the zoom dialog pop, and the focus dimming of feature rows. All off under `prefers-reduced-motion`.
 
 ## Components
 
@@ -80,7 +77,9 @@ Defined in `src/app/globals.css` under `@theme`.
 | `btn-primary` | Main action on a page | Accent fill. One per view where possible |
 | `btn-secondary` | Alternative action | Border, no fill |
 | `link` | Inline and standalone text links | Accent, underline on hover, never "click here" |
-| `card` | Bordered block | Border + radius, no shadow, never a hover effect unless the whole card is a link |
 | `field` | All inputs, selects and textareas | Same height, border, focus ring and error state |
-| `CtaSection` | Last section of each page | Left-aligned, on `surface` |
-| `PageIntro` | Top of inner pages | Breadcrumb, H1, one lead paragraph |
+| `CtaSection` | Last section of each page | A small "New enquiry" window on the desk |
+| `PageIntro` | Top of inner pages | Path-bar breadcrumb, H1, one lead paragraph |
+| `WindowFrame` | Any window | Title bar with pinstripes when active; close button only when closing works |
+| `Desktop` + `ManagedWindow` | Hero and the services desktop | Draggable, stackable windows; see `docs/desktop-plan.md` |
+| `chip` | Small toggles inside demos | Uses `aria-pressed` for its selected state |

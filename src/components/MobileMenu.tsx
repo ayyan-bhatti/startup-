@@ -54,11 +54,11 @@ export function MobileMenu() {
   }, [open]);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         ref={toggleRef}
         type="button"
-        className="-mr-2 flex h-11 w-11 items-center justify-center text-ink"
+        className="-mr-2 flex h-11 w-11 items-center justify-center rounded-md text-ink"
         aria-expanded={open}
         aria-controls="mobile-menu"
         onClick={() => setOpen((v) => !v)}
@@ -72,9 +72,9 @@ export function MobileMenu() {
         ref={panelRef}
         id="mobile-menu"
         hidden={!open}
-        className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-line bg-base px-4 pb-8 pt-4"
+        className="desk-dots fixed inset-x-0 top-[53px] bottom-0 overflow-y-auto px-4 pb-8 pt-4"
       >
-        <nav aria-label="Main">
+        <nav aria-label="Main" className="overflow-hidden rounded-[var(--radius-window)] border border-frame bg-window p-4 [box-shadow:var(--shadow-window-active)]">
           <ul className="divide-y divide-line border-b border-line">
             {siteConfig.nav.map((item) => (
               <li key={item.href}>
@@ -82,7 +82,7 @@ export function MobileMenu() {
                   href={item.href}
                   aria-current={pathname === item.href ? "page" : undefined}
                   onClick={() => setOpen(false)}
-                  className="block py-4 text-lg text-ink aria-[current=page]:font-semibold aria-[current=page]:text-accent"
+                  className="block py-4 text-lg text-ink aria-[current=page]:font-semibold aria-[current=page]:text-link"
                 >
                   {item.label}
                 </Link>

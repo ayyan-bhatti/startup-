@@ -5,6 +5,7 @@ import { industryExamples } from "@/content/industries";
 import { CtaSection } from "@/components/CtaSection";
 import { JsonLd } from "@/components/JsonLd";
 import { PageIntro } from "@/components/PageIntro";
+import { AppTile } from "@/components/services/AppTile";
 import { SectionIndex } from "@/components/SectionIndex";
 import { absoluteUrl, breadcrumbJsonLd, organizationId, pageMetadata } from "@/lib/seo";
 
@@ -56,13 +57,16 @@ export default function ServicesPage() {
         <div className="min-w-0 divide-y divide-line">
           {services.map((s) => (
             <section key={s.slug} id={s.slug} aria-labelledby={`${s.slug}-heading`} className="py-10 first:pt-0">
-              <h2 id={`${s.slug}-heading`} className="text-2xl">{s.title}</h2>
+              <h2 id={`${s.slug}-heading`} className="flex items-center gap-3 text-2xl">
+                <AppTile slug={s.slug} className="h-10 w-10" />
+                {s.title}
+              </h2>
               <p className="mt-3 text-lg leading-8 text-ink">{s.short}</p>
               <p className="mt-3 max-w-3xl">{s.intro}</p>
               <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
                 <div className="min-w-0">
                   <h3 className="text-base">What is included</h3>
-                  <ul className="mt-2 list-disc space-y-1.5 pl-5 marker:text-accent">
+                  <ul className="mt-2 list-disc space-y-1.5 pl-5 marker:text-[#c9822e]">
                     {s.deliverables.map((d) => <li key={d}>{d}</li>)}
                   </ul>
                 </div>

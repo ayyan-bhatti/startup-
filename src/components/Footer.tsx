@@ -2,42 +2,88 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { services } from "@/content/services";
 
+/* 5x7 pixel letters for the wordmark. */
+const GLYPHS: Record<string, string[]> = {
+  c: [".###.", "#...#", "#....", "#....", "#....", "#...#", ".###."],
+  o: [".###.", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."],
+  r: ["####.", "#...#", "#...#", "####.", "#.#..", "#..#.", "#...#"],
+  e: ["#####", "#....", "#....", "####.", "#....", "#....", "#####"],
+};
+
+/** The studio name, built from small glossy tiles. */
+function Wordmark({ text }: { text: string }) {
+  const letters = text.toLowerCase().split("").filter((ch) => GLYPHS[ch]);
+  const cell = 26;
+  const gap = 2;
+  const width = letters.length * 6 * cell;
+  return (
+    <svg viewBox={`0 0 ${width} ${7 * cell}`} className="h-auto w-full" role="img" aria-label={text}>
+      <defs>
+        <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#d6ecff" />
+          <stop offset=".45" stopColor="#7cc4f6" />
+          <stop offset="1" stopColor="#4aa6ea" />
+        </linearGradient>
+      </defs>
+      {letters.map((ch, li) =>
+        GLYPHS[ch].flatMap((row, y) =>
+          row.split("").map((v, x) =>
+            v === "#" ? (
+              <g key={`${li}-${x}-${y}`}>
+                <rect x={li * 6 * cell + x * cell + gap / 2} y={y * cell + gap / 2} width={cell - gap} height={cell - gap} rx="4" fill="url(#tile)" stroke="#2a7cc0" strokeOpacity=".35" />
+                <rect x={li * 6 * cell + x * cell + 4} y={y * cell + 3} width={cell - 8} height="5" rx="2.5" fill="#fff" opacity=".55" />
+              </g>
+            ) : null,
+          ),
+        ),
+      )}
+    </svg>
+  );
+}
+
+const linkCls = "w-fit text-[16px] leading-normal tracking-[-0.48px] text-black/60 transition-colors hover:text-black";
+const headCls = "text-[16px] font-normal leading-normal tracking-[-0.48px] text-black";
+
 export function Footer() {
   return (
-    <footer className="border-t border-line bg-surface text-sm">
-      <div className="container-page grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr]">
-        <div className="min-w-0">
-          <p className="text-base font-semibold text-ink">{siteConfig.name}</p>
-          <p className="mt-2 max-w-sm">{siteConfig.tagline}. We work remotely with clients worldwide.</p>
-          <p className="mt-4">
-            <a href={`mailto:${siteConfig.email}`} className="link">{siteConfig.email}</a>
-          </p>
-        </div>
-        <nav aria-label="Footer" className="min-w-0">
-          <h2 className="text-sm font-semibold">Pages</h2>
-          <ul className="mt-3 space-y-2">
-            <li><Link href="/" className="hover:text-ink hover:underline">Home</Link></li>
+    <footer className="relative overflow-hidden">
+      <div className="mx-auto max-w-[1090px] border-t-2 border-dotted border-black/10 px-5 pb-6 pt-16 lg:px-0 lg:pt-[104px]">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-[31px]">
+          <nav aria-label="Footer" className="flex flex-col gap-3">
+            <h2 className={headCls}>pages</h2>
+            <Link href="/" className={linkCls}>home</Link>
             {siteConfig.nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="hover:text-ink hover:underline">{item.label}</Link>
-              </li>
+              <Link key={item.href} href={item.href} className={linkCls}>{item.label.toLowerCase()}</Link>
             ))}
-          </ul>
-        </nav>
-        <div className="min-w-0">
-          <h2 className="text-sm font-semibold">Services</h2>
-          <ul className="mt-3 space-y-2">
+          </nav>
+          <div className="flex flex-col gap-3">
+            <h2 className={headCls}>services</h2>
             {services.map((s) => (
-              <li key={s.slug}>
-                <Link href={`/services#${s.slug}`} className="hover:text-ink hover:underline">{s.title}</Link>
-              </li>
+              <Link key={s.slug} href={`/services#${s.slug}`} className={linkCls}>{s.title.toLowerCase()}</Link>
             ))}
-          </ul>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h2 className={headCls}>contact</h2>
+            <a href={`mailto:${siteConfig.email}`} className={linkCls}>{siteConfig.email}</a>
+            <Link href={siteConfig.cta.href} className={linkCls}>start a project</Link>
+            {siteConfig.socials.map((url) => (
+              <a key={url} href={url} className={linkCls} rel="me noopener">{new URL(url).hostname.replace("www.", "")}</a>
+            ))}
+          </div>
+          <div className="flex flex-col gap-3">
+            <h2 className={headCls}>note</h2>
+            <p className="text-[16px] leading-normal tracking-[-0.48px] text-black/60">
+              we reply to every enquiry within {siteConfig.replyTime}, including the ones we turn down.
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="container-page flex flex-col gap-1 border-t border-line py-5 text-muted sm:flex-row sm:justify-between">
-        <p>© {new Date().getFullYear()} {siteConfig.legalName}</p>
-        {siteConfig.legalAddress && <p>{siteConfig.legalAddress}</p>}
+        <div className="mx-auto mt-16 max-w-[760px] lg:mt-20">
+          <Wordmark text={siteConfig.name} />
+        </div>
+        <p className="mt-10 text-center text-[12px] leading-4 tracking-[-0.24px] text-black/60">
+          © {new Date().getFullYear()} {siteConfig.legalName}
+          {siteConfig.legalAddress ? ` · ${siteConfig.legalAddress}` : ""}
+        </p>
       </div>
     </footer>
   );
