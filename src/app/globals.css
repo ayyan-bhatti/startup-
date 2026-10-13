@@ -1,39 +1,63 @@
 @import "tailwindcss";
 
-/* Design tokens. See docs/style-guide.md. */
+/* Design tokens. See docs/style-guide.md and docs/experience-plan.md. */
 @theme {
-  --color-ink: #1c1917;
-  --color-body: #44403c;
-  --color-muted: #6b6560;
-  --color-line: #e7e3dd;
-  --color-surface: #f7f5f2;
-  --color-accent: #1f5c45;
-  --color-accent-hover: #17483a;
-  --color-success: #1f5c45;
-  --color-danger: #a1281c;
+  --color-base: #14110e;
+  --color-surface: #1c1915;
+  --color-surface-2: #26221c;
+  --color-line: #3b352d;
+  --color-ink: #f3ece1;
+  --color-body: #d3cabc;
+  --color-muted: #a39886;
+  --color-accent: #f0a54a;
+  --color-accent-hover: #f7c27e;
+  --color-on-accent: #1a1207;
+  --color-danger: #ff9b8a;
+  --color-success: #a6d9a8;
 
   --radius: 6px;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-body), ui-sans-serif, sans-serif;
+
+  /* Motion system. Mirrored in src/lib/motion.ts. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-move: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 900ms;
 }
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
   html {
     scroll-behavior: smooth;
+    background: var(--color-base);
+  }
+  /* Smooth scrolling library manages scrolling itself when active. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
   }
   body {
-    @apply bg-white text-body antialiased;
+    @apply bg-base text-body antialiased;
     overflow-wrap: anywhere;
   }
   h1,
   h2,
   h3 {
-    @apply font-semibold text-ink;
+    @apply font-display font-semibold text-ink;
     overflow-wrap: anywhere;
     text-wrap: balance;
+    letter-spacing: -0.015em;
   }
   ::selection {
-    @apply bg-accent text-white;
+    @apply bg-accent text-on-accent;
   }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-accent;
@@ -49,6 +73,8 @@
     *::before,
     *::after {
       transition-duration: 0s !important;
+      animation-duration: 0s !important;
+      animation-iteration-count: 1 !important;
     }
   }
 }
@@ -57,41 +83,80 @@
   @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
 }
 @utility btn {
-  @apply inline-flex min-h-11 max-w-full items-center justify-center px-5 py-2.5 text-center text-sm font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex min-h-11 max-w-full items-center justify-center px-5 py-2.5 text-center text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60;
   border-radius: var(--radius);
+  transition:
+    background-color var(--dur-fast) var(--ease-move),
+    border-color var(--dur-fast) var(--ease-move),
+    transform var(--dur-fast) var(--ease-move);
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
 }
 @utility btn-primary {
-  @apply btn bg-accent text-white hover:bg-accent-hover active:bg-accent-hover;
+  @apply btn bg-accent text-on-accent hover:bg-accent-hover;
 }
 @utility btn-secondary {
-  @apply btn border border-ink/25 text-ink hover:border-ink hover:bg-surface;
+  @apply btn border border-line text-ink hover:border-muted hover:bg-surface-2;
 }
 @utility link {
-  @apply font-semibold text-accent underline-offset-4 transition-colors duration-150 hover:text-accent-hover hover:underline;
-}
-@utility card {
-  @apply border border-line bg-white p-6;
-  border-radius: var(--radius);
+  @apply font-semibold text-accent underline-offset-4 hover:text-accent-hover hover:underline;
+  transition: color var(--dur-fast) var(--ease-move);
 }
 @utility field {
-  @apply mt-2 block w-full min-w-0 border border-ink/30 bg-white px-3.5 py-2.5 text-base text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-offset-0 focus:outline-accent aria-[invalid=true]:border-danger;
+  @apply mt-2 block w-full min-w-0 border border-line bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-muted hover:border-muted focus:border-accent focus:outline-2 focus:outline-offset-0 focus:outline-accent aria-[invalid=true]:border-danger;
   border-radius: var(--radius);
 }
-@utility eyebrow {
-  @apply text-sm font-semibold text-accent;
+
+/* A single slow pulse of the core, used to confirm a sent enquiry. */
+@keyframes core-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.18);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.core-pulse {
+  animation: core-pulse var(--dur-slow) var(--ease-settle) 1;
+  transform-origin: center;
+  transform-box: fill-box;
 }
 
 @media print {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  h1,
+  h2,
+  h3,
+  p,
+  li,
+  dt,
+  dd,
+  td,
+  th {
+    color: #000 !important;
+  }
   header,
   footer,
+  canvas,
   .no-print {
     display: none !important;
   }
-  body {
-    color: #000;
-  }
   a {
-    color: #000;
+    color: #000 !important;
     text-decoration: underline;
   }
 }

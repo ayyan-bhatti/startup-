@@ -72,7 +72,7 @@ export function MobileMenu() {
         ref={panelRef}
         id="mobile-menu"
         hidden={!open}
-        className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-line bg-white px-4 pb-8 pt-4"
+        className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-line bg-base px-4 pb-8 pt-4"
       >
         <nav aria-label="Main">
           <ul className="divide-y divide-line border-b border-line">

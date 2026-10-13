@@ -3,6 +3,7 @@ import { processQuestions, processSteps } from "@/content/process";
 import { CtaSection } from "@/components/CtaSection";
 import { JsonLd } from "@/components/JsonLd";
 import { PageIntro } from "@/components/PageIntro";
+import { CoreFigure } from "@/components/core/CoreFigure";
 import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -23,31 +24,39 @@ export default function ProcessPage() {
       />
 
       <section aria-label="The six steps" className="py-12 sm:py-16">
-        <ol className="container-page">
-          {processSteps.map((step, i) => (
-            <li key={step.title} className="grid grid-cols-1 gap-4 border-b border-line py-8 first:pt-0 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
-              <div>
+        <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_24rem]">
+          <ol id="process-steps" className="min-w-0">
+            {processSteps.map((step, i) => (
+              <li key={step.title} className="border-b border-line py-8 first:pt-0">
                 <p className="text-sm text-muted">Step {i + 1} of {processSteps.length}</p>
                 <h2 className="mt-1 text-2xl">{step.title}</h2>
-                <p className="mt-2">{step.summary}</p>
-              </div>
-              <dl className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <div className="min-w-0">
-                  <dt className="text-sm font-semibold text-ink">What we do</dt>
-                  <dd className="mt-1">{step.we}</dd>
-                </div>
-                <div className="min-w-0">
-                  <dt className="text-sm font-semibold text-ink">What we need from you</dt>
-                  <dd className="mt-1">{step.you}</dd>
-                </div>
-                <div className="min-w-0">
-                  <dt className="text-sm font-semibold text-ink">What you get</dt>
-                  <dd className="mt-1">{step.output}</dd>
-                </div>
-              </dl>
-            </li>
-          ))}
-        </ol>
+                <p className="mt-2 text-lg text-ink">{step.summary}</p>
+                <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                  <div className="min-w-0">
+                    <dt className="text-sm font-semibold text-ink">What we do</dt>
+                    <dd className="mt-1">{step.we}</dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-sm font-semibold text-ink">What we need from you</dt>
+                    <dd className="mt-1">{step.you}</dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-sm font-semibold text-ink">What you get</dt>
+                    <dd className="mt-1">{step.output}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ol>
+          <div className="hidden lg:block">
+            <div className="sticky top-24">
+              <CoreFigure mode="process" progressFrom="process-steps" />
+              <p className="mt-4 text-sm text-muted">
+                Each step adds a layer. By launch, the work is complete around the core: what your business needs.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section aria-labelledby="questions-heading" className="border-t border-line py-16 sm:py-20">

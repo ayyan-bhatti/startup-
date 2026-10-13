@@ -20,11 +20,12 @@ Use one term per concept, everywhere: page copy, metadata, structured data, emai
 ### Service names (exact, everywhere)
 
 1. Websites
-2. Mobile apps
-3. Custom software
-4. AI automation
-5. SEO
-6. Branding
+2. 3D and interactive websites
+3. Mobile apps
+4. Custom software
+5. AI automation
+6. SEO
+7. Branding
 
 "Other projects" is the catch-all, and "Something else or not sure yet" is its form option.
 

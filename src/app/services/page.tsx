@@ -5,12 +5,13 @@ import { industryExamples } from "@/content/industries";
 import { CtaSection } from "@/components/CtaSection";
 import { JsonLd } from "@/components/JsonLd";
 import { PageIntro } from "@/components/PageIntro";
+import { SectionIndex } from "@/components/SectionIndex";
 import { absoluteUrl, breadcrumbJsonLd, organizationId, pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Website, app and custom software development services",
   description:
-    "Websites, mobile apps, custom software, AI automation, SEO and branding. What each service includes, who it suits, and examples of projects across industries. Clients worldwide.",
+    "Websites, 3D and interactive websites, mobile apps, custom software, AI automation, SEO and branding. What each service includes, who it suits, and examples of projects across industries. Clients worldwide.",
   path: "/services",
 });
 
@@ -43,13 +44,13 @@ export default function ServicesPage() {
       <div className="container-page grid grid-cols-1 gap-12 py-12 lg:grid-cols-[14rem_minmax(0,1fr)] lg:py-16">
         <nav aria-label="Services on this page" className="no-print lg:sticky lg:top-24 lg:self-start">
           <p className="text-sm font-semibold text-ink">On this page</p>
-          <ul className="mt-3 space-y-2 text-sm">
-            {services.map((s) => (
-              <li key={s.slug}><a href={`#${s.slug}`} className="hover:text-ink hover:underline">{s.title}</a></li>
-            ))}
-            <li><a href={`#${otherProjects.slug}`} className="hover:text-ink hover:underline">{otherProjects.title}</a></li>
-            <li><a href="#industries" className="hover:text-ink hover:underline">Examples by industry</a></li>
-          </ul>
+          <SectionIndex
+            items={[
+              ...services.map((s) => ({ id: s.slug, label: s.title })),
+              { id: otherProjects.slug, label: otherProjects.title },
+              { id: "industries", label: "Examples by industry" },
+            ]}
+          />
         </nav>
 
         <div className="min-w-0 divide-y divide-line">
@@ -88,7 +89,7 @@ export default function ServicesPage() {
               <table className="w-full min-w-[20rem] border-collapse text-left">
                 <caption className="sr-only">Example projects by industry</caption>
                 <thead>
-                  <tr className="border-b-2 border-ink text-sm">
+                  <tr className="border-b-2 border-muted text-sm">
                     <th scope="col" className="py-2 pr-6 font-semibold text-ink">Industry</th>
                     <th scope="col" className="py-2 font-semibold text-ink">Typical projects</th>
                   </tr>

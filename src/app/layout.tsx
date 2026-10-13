@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 import { siteConfig } from "@/config/site";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], weight: ["400", "600"], display: "swap", variable: "--font-inter", adjustFontFallback: true });
+const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600"], display: "swap", variable: "--font-display-face", adjustFontFallback: true });
+const body = Instrument_Sans({ subsets: ["latin"], weight: ["400", "600"], display: "swap", variable: "--font-body", adjustFontFallback: true });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -24,6 +26,8 @@ export const metadata: Metadata = {
     "AI automation agency",
     "SEO services",
     "branding agency",
+    "3D website design",
+    "interactive website development",
   ],
   openGraph: {
     type: "website",
@@ -36,18 +40,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#14110e",
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
+    <html lang="en" className={`${display.variable} ${body.variable}`} data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col font-sans">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-accent focus:px-4 focus:py-2 focus:font-semibold focus:text-on-accent"
         >
           Skip to content
         </a>
@@ -56,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <SmoothScroll />
       </body>
     </html>
   );

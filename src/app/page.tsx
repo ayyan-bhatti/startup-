@@ -4,12 +4,13 @@ import { services } from "@/content/services";
 import { industryExamples } from "@/content/industries";
 import { processSteps } from "@/content/process";
 import { CtaSection } from "@/components/CtaSection";
+import { CoreFigure } from "@/components/core/CoreFigure";
 import { JsonLd } from "@/components/JsonLd";
 import { organizationId, organizationJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = {
   ...pageMetadata({
-    description: `${siteConfig.name} is a software development company. We build websites, mobile apps and custom software, and handle AI automation, SEO and branding for clients in any industry, worldwide.`,
+    description: `${siteConfig.name} is a software development company. We build websites, 3D and interactive websites, mobile apps and custom software, and handle AI automation, SEO and branding for clients in any industry, worldwide.`,
     path: "/",
   }),
   title: { absolute: `${siteConfig.name} | Website, app and software development company` },
@@ -36,22 +37,24 @@ export default function HomePage() {
     <>
       <JsonLd data={jsonLd} />
 
-      <section className="border-b border-line">
-        <div className="container-page py-16 sm:py-24">
-          <h1 className="max-w-4xl text-4xl leading-tight sm:text-5xl lg:text-6xl">
-            We build websites, apps and software for businesses of any size, in any industry.
-          </h1>
-          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-end">
-            <p className="max-w-2xl text-lg leading-8">
+      <section id="hero" className="border-b border-line">
+        <div className="container-page grid grid-cols-1 items-center gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-6 lg:py-24">
+          <div className="min-w-0">
+            <h1 className="max-w-3xl text-4xl leading-[1.08] sm:text-5xl lg:text-6xl">
+              We build websites, apps and software for businesses of any size, in any industry.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-8">
               Some clients come to us with an idea and nothing else. Others have a business that has outgrown its
               website or its spreadsheets. We plan the work with you, build it, launch it, and keep improving it
-              afterwards. We work remotely, with clients in any country.
+              afterwards. That includes 3D and interactive websites like this one. We work remotely, with clients in
+              any country.
             </p>
-            <div className="flex flex-wrap gap-3 lg:justify-end">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link href={siteConfig.cta.href} className="btn-primary">{siteConfig.cta.label}</Link>
               <Link href="/services" className="btn-secondary">See our services</Link>
             </div>
           </div>
+          <CoreFigure mode="hero" progressFrom="hero" className="mx-auto max-w-[18rem] sm:max-w-sm lg:max-w-none" />
         </div>
       </section>
 
@@ -60,7 +63,7 @@ export default function HomePage() {
           <div>
             <h2 id="services-heading" className="text-2xl">What we do</h2>
             <p className="mt-3">
-              Six services cover most projects. Many clients use two or three together, for example a website with SEO,
+              These services cover most projects. Many clients use two or three together, for example a website with SEO,
               or an app with the system behind it.
             </p>
             <p className="mt-3">
@@ -100,7 +103,7 @@ export default function HomePage() {
           <h2 id="process-heading" className="text-2xl">How a project runs</h2>
           <ol className="mt-8 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-6">
             {processSteps.map((step, i) => (
-              <li key={step.title} className="min-w-0 border-t-2 border-ink pt-3">
+              <li key={step.title} className="min-w-0 border-t-2 border-muted pt-3">
                 <p className="text-sm text-muted">{String(i + 1).padStart(2, "0")}</p>
                 <h3 className="mt-1 text-lg">{step.title}</h3>
                 <p className="mt-1 text-sm">{step.summary}</p>

@@ -26,6 +26,20 @@ export const services: Service[] = [
     goodFit: "You have no site, or your current site is out of date, slow, or does not bring in enquiries.",
   },
   {
+    slug: "3d-interactive-websites",
+    title: "3D and interactive websites",
+    short: "Websites with 3D scenes, scroll-driven animation and interactive product views that people remember, built to stay fast and findable.",
+    intro:
+      "Some products are easier to understand when people can turn them, take them apart or watch them come together. We design and build 3D and animated websites for launches, product pages and brands that want to stand out, and we build them so the words still load first, search engines can read every page, and phones get a lighter version.",
+    deliverables: [
+      "Interactive 3D product views and scenes that react to the pointer and to scrolling",
+      "Scroll-driven sequences that explain a product or process step by step",
+      "A lighter version for phones, older devices and people who prefer less motion",
+      "The same search and speed setup as our other websites",
+    ],
+    goodFit: "You are launching a product, a brand or a campaign and want the website to be part of the story, not just a container for it.",
+  },
+  {
     slug: "mobile-apps",
     title: "Mobile apps",
     short: "iPhone and Android apps for your customers or your staff, from the first screen design to the app store listing.",
@@ -104,5 +118,5 @@ export const services: Service[] = [
 export const otherProjects = {
   slug: "other-projects",
   title: "Other projects",
-  text: "The six services above are what clients ask for most, not the full list. We also take on integrations between systems, marketplaces, internal tools, data dashboards, migrations from old systems and projects that combine several services. If your project is not described here, tell us about it and we will say honestly whether we are the right team for it.",
+  text: "The services above are what clients ask for most, not the full list. We also take on integrations between systems, marketplaces, internal tools, data dashboards, migrations from old systems and projects that combine several services. If your project is not described here, tell us about it and we will say honestly whether we are the right team for it.",
 };

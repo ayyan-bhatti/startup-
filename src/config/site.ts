@@ -9,7 +9,7 @@ export const siteConfig = {
   legalName: "Core Digital Ltd.",
   tagline: "Websites, apps and software for any business",
   description:
-    "Core builds websites, mobile apps and custom software, and handles AI automation, SEO and branding for clients in any industry, anywhere in the world.",
+    "Core builds websites, 3D and interactive websites, mobile apps and custom software, and handles AI automation, SEO and branding for clients in any industry, anywhere in the world.",
   /** Canonical domain. Override per environment with NEXT_PUBLIC_SITE_URL. */
   url: (process.env.NEXT_PUBLIC_SITE_URL || fallbackUrl).replace(/\/$/, ""),
   /** Public contact email shown on the site. [PLACEHOLDER] */

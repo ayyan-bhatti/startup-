@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/config/site";
+import { CoreStatic } from "@/components/core/CoreStatic";
 import { serviceOptions, validateContact, type ContactErrors, type ContactInput } from "@/lib/contact";
 
 type Status = "idle" | "sending" | "success" | "error";
@@ -42,6 +43,11 @@ export function ContactForm() {
   const sendingRef = useRef(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
+  // Move focus to the result once it is on screen, so keyboard and screen reader users hear it.
+  useEffect(() => {
+    if (status === "error" || status === "success") resultRef.current?.focus();
+  }, [status, failure]);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (sendingRef.current) return;
@@ -80,7 +86,6 @@ export function ContactForm() {
       setStatus("error");
     } finally {
       sendingRef.current = false;
-      requestAnimationFrame(() => resultRef.current?.focus());
     }
   }
 
@@ -92,7 +97,9 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <div ref={resultRef} tabIndex={-1} role="status" className="mt-8 border-l-4 border-success bg-surface p-6 outline-none">
+      <div ref={resultRef} tabIndex={-1} role="status" className="mt-8 grid grid-cols-[3.5rem_minmax(0,1fr)] gap-5 border-l-4 border-success bg-surface p-6 outline-none">
+        <CoreStatic shells={2} pulse className="h-14 w-14" />
+        <div className="min-w-0">
         <h2 className="text-xl">Thank you. Your enquiry has been sent.</h2>
         <p className="mt-2">
           We have emailed you a confirmation with a copy of your message. We will reply within {siteConfig.replyTime}.
@@ -100,6 +107,7 @@ export function ContactForm() {
         <button type="button" onClick={() => setStatus("idle")} className="link mt-4">
           Send another enquiry
         </button>
+        </div>
       </div>
     );
   }
