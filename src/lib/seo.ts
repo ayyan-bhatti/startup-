@@ -54,9 +54,8 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
 
 export const organizationId = `${siteConfig.url}/#organization`;
 
-/** Organization + local business details, used on the home page. */
+/** Organization details, used on the home page. We serve clients worldwide. */
 export function organizationJsonLd() {
-  const { city, country, countryCode } = siteConfig.location;
   return {
     "@context": "https://schema.org",
     "@type": ["Organization", "ProfessionalService"],
@@ -68,15 +67,18 @@ export function organizationJsonLd() {
     image: `${siteConfig.url}/opengraph-image`,
     email: siteConfig.email,
     description: siteConfig.description,
-    address: { "@type": "PostalAddress", addressLocality: city, addressCountry: countryCode },
-    areaServed: [{ "@type": "City", name: city }, { "@type": "Country", name: country }],
+    slogan: siteConfig.tagline,
+    areaServed: "Worldwide",
     knowsAbout: services.map((s) => s.title),
+    ...(siteConfig.legalAddress ? { address: siteConfig.legalAddress } : {}),
     ...(siteConfig.socials.length ? { sameAs: siteConfig.socials } : {}),
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "sales",
       email: siteConfig.email,
       url: `${siteConfig.url}/contact`,
+      areaServed: "Worldwide",
+      availableLanguage: "English",
     },
   };
 }

@@ -1,8 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
-import { locationLabel, siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { services } from "@/content/services";
-import { industries } from "@/content/industries";
+import { industryExamples } from "@/content/industries";
 import { processSteps } from "@/content/process";
 import { CtaSection } from "@/components/CtaSection";
 import { JsonLd } from "@/components/JsonLd";
@@ -10,30 +9,11 @@ import { organizationId, organizationJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = {
   ...pageMetadata({
-    description: `${siteConfig.name} helps healthcare, legal and fitness businesses start, launch and scale online with websites, apps, SEO, branding, AI appointment booking and management systems.`,
+    description: `${siteConfig.name} is a software development company. We build websites, mobile apps and custom software, and handle AI automation, SEO and branding for clients in any industry, worldwide.`,
     path: "/",
   }),
-  title: { absolute: `${siteConfig.name} | Digital Solutions for Clinics, Law Firms & Gyms` },
+  title: { absolute: `${siteConfig.name} | Website, app and software development company` },
 };
-
-const reasons = [
-  {
-    title: "We focus on results",
-    text: "More patients, more clients, more bookings and less manual work. That is how we measure every project.",
-  },
-  {
-    title: "We know your industry",
-    text: "We specialise in healthcare, legal and fitness businesses, so we already understand your customers and daily workflows.",
-  },
-  {
-    title: "One partner for everything",
-    text: "Website, app, Google visibility, brand and automation, handled together instead of by five different suppliers.",
-  },
-  {
-    title: "Clear and honest",
-    text: "Plain language, realistic timelines and transparent pricing. You always know what is happening and why.",
-  },
-];
 
 export default function HomePage() {
   const jsonLd = [
@@ -50,149 +30,94 @@ export default function HomePage() {
     },
   ];
 
+  const industryNames = industryExamples.map((i) => i.name.toLowerCase());
+
   return (
     <>
       <JsonLd data={jsonLd} />
 
-      <section className="bg-ink">
-        <div className="container-page grid items-center gap-12 py-20 lg:grid-cols-2 lg:py-28">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-accent-light">
-              Digital solutions for healthcare, legal &amp; fitness
+      <section className="border-b border-line">
+        <div className="container-page py-16 sm:py-24">
+          <h1 className="max-w-4xl text-4xl leading-tight sm:text-5xl lg:text-6xl">
+            We build websites, apps and software for businesses of any size, in any industry.
+          </h1>
+          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-end">
+            <p className="max-w-2xl text-lg leading-8">
+              Some clients come to us with an idea and nothing else. Others have a business that has outgrown its
+              website or its spreadsheets. We plan the work with you, build it, launch it, and keep improving it
+              afterwards. We work remotely, with clients in any country.
             </p>
-            <h1 className="mt-4 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-              Start, launch and scale your business online
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-              Whether you are just getting started or ready to grow, we help clinics, hospitals, pharmacies, law firms
-              and gyms win more patients, clients and members, with less time spent on paperwork and phone calls.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link href="/contact" className="btn-primary">Start your project</Link>
-              <Link href="/services" className="btn-secondary">See how we can help</Link>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <Link href={siteConfig.cta.href} className="btn-primary">{siteConfig.cta.label}</Link>
+              <Link href="/services" className="btn-secondary">See our services</Link>
             </div>
           </div>
-          <Image
-            src="/hero-illustration.svg"
-            alt="Illustration of a business website and a booking app on a phone"
-            width={560}
-            height={420}
-            priority
-            className="mx-auto h-auto w-full max-w-lg"
-          />
         </div>
       </section>
 
-      <section aria-labelledby="stages-heading" className="border-b border-slate-200 py-16">
-        <div className="container-page">
-          <h2 id="stages-heading" className="sr-only">Where we help you</h2>
-          <ul className="grid gap-8 md:grid-cols-3">
-            <li>
-              <h3 className="text-xl font-bold">Start</h3>
-              <p className="mt-2">No website or online presence yet? We give your business a credible, professional start online.</p>
-            </li>
-            <li>
-              <h3 className="text-xl font-bold">Launch</h3>
-              <p className="mt-2">Launching something new? We make sure it looks right, works smoothly and reaches the right people.</p>
-            </li>
-            <li>
-              <h3 className="text-xl font-bold">Scale</h3>
-              <p className="mt-2">Ready to grow? We bring in more enquiries and automate the work that slows your team down.</p>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section aria-labelledby="services-heading" className="py-20 sm:py-24">
-        <div className="container-page">
-          <p className="eyebrow">What we do</p>
-          <h2 id="services-heading" className="mt-2 text-3xl font-bold sm:text-4xl">Everything your business needs to grow online</h2>
-          <p className="mt-4 max-w-2xl text-lg">
-            Choose a single service or let us handle your whole digital presence, from first impression to day-to-day operations.
-          </p>
-          <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <section aria-labelledby="services-heading" className="py-16 sm:py-20">
+        <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <div>
+            <h2 id="services-heading" className="text-2xl">What we do</h2>
+            <p className="mt-3">
+              Six services cover most projects. Many clients use two or three together, for example a website with SEO,
+              or an app with the system behind it.
+            </p>
+            <p className="mt-3">
+              <Link href="/services#other-projects" className="link">Projects outside these six</Link>
+            </p>
+          </div>
+          <dl className="divide-y divide-line border-y border-line">
             {services.map((s) => (
-              <li key={s.slug} className="flex flex-col rounded-xl border border-slate-200 p-6 transition-shadow hover:shadow-lg">
-                <h3 className="text-lg font-semibold">{s.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-6">{s.short}</p>
-                <Link href={`/services#${s.slug}`} className="mt-5 text-sm font-semibold text-accent hover:text-accent-hover">
-                  More about {s.title} <span aria-hidden="true">→</span>
-                </Link>
-              </li>
+              <div key={s.slug} className="grid grid-cols-1 gap-1 py-5 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-6">
+                <dt>
+                  <Link href={`/services#${s.slug}`} className="link">{s.title}</Link>
+                </dt>
+                <dd>{s.short}</dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </div>
       </section>
 
-      <section aria-labelledby="industries-heading" className="bg-slate-50 py-20 sm:py-24">
-        <div className="container-page">
-          <p className="eyebrow">Who we help</p>
-          <h2 id="industries-heading" className="mt-2 text-3xl font-bold sm:text-4xl">Built for healthcare, legal and fitness businesses</h2>
-          <p className="mt-4 max-w-2xl text-lg">
-            We work with local service businesses in {locationLabel} and beyond, where every missed call or forgotten
-            appointment is lost revenue.
+      <section aria-labelledby="clients-heading" className="bg-surface py-16 sm:py-20">
+        <div className="container-page max-w-4xl">
+          <h2 id="clients-heading" className="text-2xl">Who we work with</h2>
+          <p className="mt-4 text-lg leading-8">
+            Our clients range from people starting their first business to large organisations replacing old systems.
+            They work in {industryNames.slice(0, -1).join(", ")} and {industryNames.at(-1)}, and in many fields not on
+            that list. What they share is the need to be found online, to look credible, and to spend less time on
+            repetitive work.
           </p>
-          <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {industries.map((ind) => (
-              <li key={ind.slug} className="rounded-xl bg-white p-6 shadow-sm">
-                <h3 className="font-semibold">{ind.name}</h3>
-                <p className="mt-2 text-sm leading-6">{ind.short}</p>
-              </li>
-            ))}
-            <li className="flex flex-col justify-center rounded-xl border border-dashed border-slate-300 p-6">
-              <h3 className="font-semibold">Similar local businesses</h3>
-              <p className="mt-2 text-sm leading-6">Physiotherapy, beauty, accounting or another service business? We can help too.</p>
-            </li>
-          </ul>
-          <Link href="/services#industries" className="mt-10 inline-block font-semibold text-accent hover:text-accent-hover">
-            See how we solve the problems in your industry <span aria-hidden="true">→</span>
-          </Link>
+          <p className="mt-4">
+            <Link href="/services#industries" className="link">Examples of projects by industry</Link>
+          </p>
         </div>
       </section>
 
-      <section aria-labelledby="process-heading" className="py-20 sm:py-24">
+      <section aria-labelledby="process-heading" className="py-16 sm:py-20">
         <div className="container-page">
-          <p className="eyebrow">How we work</p>
-          <h2 id="process-heading" className="mt-2 text-3xl font-bold sm:text-4xl">A clear path from first call to growth</h2>
-          <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 id="process-heading" className="text-2xl">How a project runs</h2>
+          <ol className="mt-8 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-6">
             {processSteps.map((step, i) => (
-              <li key={step.title} className="rounded-xl border border-slate-200 p-6">
-                <span className="text-sm font-bold text-accent">Step {i + 1}</span>
-                <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6">{step.summary}</p>
+              <li key={step.title} className="min-w-0 border-t-2 border-ink pt-3">
+                <p className="text-sm text-muted">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="mt-1 text-lg">{step.title}</h3>
+                <p className="mt-1 text-sm">{step.summary}</p>
               </li>
             ))}
           </ol>
-          <Link href="/process" className="mt-10 inline-block font-semibold text-accent hover:text-accent-hover">
-            See our full six-step process <span aria-hidden="true">→</span>
-          </Link>
+          <p className="mt-8">
+            Every project starts with Discovery and a written proposal, so you know the scope and cost before any work
+            begins. <Link href="/process" className="link">Read the full process</Link>
+          </p>
         </div>
       </section>
 
-      <section aria-labelledby="why-heading" className="bg-slate-50 py-20 sm:py-24">
-        <div className="container-page grid gap-12 lg:grid-cols-3">
-          <div>
-            <p className="eyebrow">Why choose us</p>
-            <h2 id="why-heading" className="mt-2 text-3xl font-bold sm:text-4xl">A partner that cares about your growth</h2>
-            <p className="mt-4">
-              <Link href="/about" className="font-semibold text-accent underline-offset-4 hover:underline">
-                Learn why we focus on healthcare, legal and fitness
-              </Link>
-              .
-            </p>
-          </div>
-          <ul className="grid gap-8 sm:grid-cols-2 lg:col-span-2">
-            {reasons.map((r) => (
-              <li key={r.title}>
-                <h3 className="text-lg font-semibold">{r.title}</h3>
-                <p className="mt-2 text-sm leading-6">{r.text}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <CtaSection title="Ready to grow your business online?" />
+      <CtaSection
+        title="Tell us what you want to build"
+        text={`Send a short description of your project. We reply within ${siteConfig.replyTime} with questions, first thoughts, and a time for a call.`}
+      />
     </>
   );
 }

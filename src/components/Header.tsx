@@ -2,27 +2,20 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
+import { NavLinks } from "./NavLinks";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink/95 backdrop-blur">
-      <div className="container-page relative flex h-16 items-center justify-between">
-        <Logo dark />
+    <header className="sticky top-0 z-40 border-b border-line bg-white">
+      <div className="container-page flex h-16 items-center justify-between gap-6">
+        <Logo />
         <nav aria-label="Main" className="hidden md:block">
-          <ul className="flex items-center gap-8">
-            {siteConfig.nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="text-sm font-medium text-slate-300 transition-colors hover:text-white">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <NavLinks />
         </nav>
-        <Link href="/contact" className="btn-primary hidden py-2 md:inline-flex">
-          Get started
+        <Link href={siteConfig.cta.href} className="btn-primary hidden min-h-10 py-2 md:inline-flex">
+          {siteConfig.cta.label}
         </Link>
-        <MobileMenu nav={siteConfig.nav} />
+        <MobileMenu />
       </div>
     </header>
   );

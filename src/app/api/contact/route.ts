@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     body = await request.json();
     if (!body || typeof body !== "object") throw new Error();
   } catch {
-    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
+    return NextResponse.json({ message: "The form data could not be read. Please reload the page and try again." }, { status: 400 });
   }
 
   // Honeypot: real users never see this field. Pretend success so bots learn nothing.
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
   const { data, errors } = validateContact(body);
   if (Object.keys(errors).length) {
-    return NextResponse.json({ message: "Please fix the highlighted fields.", errors }, { status: 422 });
+    return NextResponse.json({ message: "Some answers need fixing. See the messages next to each field.", errors }, { status: 422 });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   const to = process.env.CONTACT_TO_EMAIL;
   if (!apiKey || !from || !to) {
     console.error("Contact form: missing RESEND_API_KEY, CONTACT_FROM_EMAIL or CONTACT_TO_EMAIL");
-    return NextResponse.json({ message: "Email service is not configured." }, { status: 500 });
+    return NextResponse.json({ message: "Our email service is not set up correctly, so we could not send your enquiry. This is our problem, not yours." }, { status: 500 });
   }
 
   const resend = new Resend(apiKey);
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   });
   if (notifyResult.error) {
     console.error("Contact form: notification failed", notifyResult.error);
-    return NextResponse.json({ message: "We could not send your message." }, { status: 502 });
+    return NextResponse.json({ message: "Our email service did not accept the enquiry. Please try again in a few minutes." }, { status: 502 });
   }
 
   // The confirmation is best effort: the enquiry has already reached us.

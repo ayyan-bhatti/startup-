@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "600"], display: "swap", variable: "--font-inter", adjustFontFallback: true });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -16,15 +16,14 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   applicationName: siteConfig.name,
   keywords: [
-    "digital solutions for healthcare",
-    "website for dental clinics",
-    "clinic management software",
-    "hospital CRM",
-    "pharmacy software and website",
-    "law firm website design and CRM",
-    "gym app and website development",
-    "AI appointment booking and automation",
-    "digital growth and SEO for clinics",
+    "software development company",
+    "website development company",
+    "app development company",
+    "custom software development",
+    "iOS and Android app development",
+    "AI automation agency",
+    "SEO services",
+    "branding agency",
   ],
   openGraph: {
     type: "website",
@@ -37,18 +36,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b1020",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col font-sans">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
         >
           Skip to content
         </a>

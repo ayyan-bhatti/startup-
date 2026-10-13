@@ -1,13 +1,18 @@
 @import "tailwindcss";
 
+/* Design tokens. See docs/style-guide.md. */
 @theme {
-  /* Brand accent — change these to re-theme the whole site */
-  --color-accent: #4f46e5;
-  --color-accent-hover: #4338ca;
-  --color-accent-soft: #eef2ff;
-  --color-accent-light: #a5b4fc; /* accent for use on dark backgrounds */
+  --color-ink: #1c1917;
+  --color-body: #44403c;
+  --color-muted: #6b6560;
+  --color-line: #e7e3dd;
+  --color-surface: #f7f5f2;
+  --color-accent: #1f5c45;
+  --color-accent-hover: #17483a;
+  --color-success: #1f5c45;
+  --color-danger: #a1281c;
 
-  --color-ink: #0b1020; /* dark sections */
+  --radius: 6px;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
@@ -16,24 +21,35 @@
   html {
     scroll-behavior: smooth;
   }
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-  }
   body {
-    @apply bg-white text-slate-700 antialiased;
+    @apply bg-white text-body antialiased;
+    overflow-wrap: anywhere;
   }
   h1,
   h2,
   h3 {
-    @apply text-slate-900 tracking-tight;
+    @apply font-semibold text-ink;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+  ::selection {
+    @apply bg-accent text-white;
   }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-accent;
   }
   [id] {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 5rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0s !important;
+    }
   }
 }
 
@@ -41,14 +57,41 @@
   @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
 }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex min-h-11 max-w-full items-center justify-center px-5 py-2.5 text-center text-sm font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+  border-radius: var(--radius);
 }
 @utility btn-primary {
-  @apply btn bg-accent text-white hover:bg-accent-hover;
+  @apply btn bg-accent text-white hover:bg-accent-hover active:bg-accent-hover;
 }
 @utility btn-secondary {
-  @apply btn border border-white/25 text-white hover:bg-white/10;
+  @apply btn border border-ink/25 text-ink hover:border-ink hover:bg-surface;
+}
+@utility link {
+  @apply font-semibold text-accent underline-offset-4 transition-colors duration-150 hover:text-accent-hover hover:underline;
+}
+@utility card {
+  @apply border border-line bg-white p-6;
+  border-radius: var(--radius);
+}
+@utility field {
+  @apply mt-2 block w-full min-w-0 border border-ink/30 bg-white px-3.5 py-2.5 text-base text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-offset-0 focus:outline-accent aria-[invalid=true]:border-danger;
+  border-radius: var(--radius);
 }
 @utility eyebrow {
-  @apply text-sm font-semibold uppercase tracking-wider text-accent;
+  @apply text-sm font-semibold text-accent;
+}
+
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    color: #000;
+  }
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
 }

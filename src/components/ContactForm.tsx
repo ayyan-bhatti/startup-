@@ -1,34 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { businessTypeOptions, serviceOptions, validateContact, type ContactErrors } from "@/lib/contact";
+import { useRef, useState } from "react";
+import { siteConfig } from "@/config/site";
+import { serviceOptions, validateContact, type ContactErrors, type ContactInput } from "@/lib/contact";
 
 type Status = "idle" | "sending" | "success" | "error";
 
-const inputClass =
-  "mt-2 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-slate-900 shadow-sm focus:border-accent focus:outline-2 focus:outline-accent aria-[invalid=true]:border-red-600";
-
-function FieldError({ id, message }: { id: string; message?: string }) {
-  if (!message) return null;
+function Field({
+  id,
+  label,
+  hint,
+  error,
+  children,
+}: {
+  id: keyof ContactInput;
+  label: string;
+  hint?: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <p id={id} className="mt-1.5 text-sm text-red-700">
-      {message}
-    </p>
+    <div className="min-w-0">
+      <label htmlFor={id} className="text-sm font-semibold text-ink">
+        {label}
+        {hint && <span className="font-normal text-muted"> {hint}</span>}
+      </label>
+      {children}
+      {error && (
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-danger">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<ContactErrors>({});
-  const [serverMessage, setServerMessage] = useState("");
+  const [failure, setFailure] = useState("");
+  const sendingRef = useRef(false);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (sendingRef.current) return;
     const form = e.currentTarget;
     const raw = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
     const { errors: clientErrors } = validateContact(raw);
     setErrors(clientErrors);
+    setFailure("");
     if (Object.keys(clientErrors).length) {
       setStatus("idle");
       const first = Object.keys(clientErrors)[0];
@@ -36,123 +58,111 @@ export function ContactForm() {
       return;
     }
 
+    sendingRef.current = true;
     setStatus("sending");
-    setServerMessage("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(raw),
       });
-      const json = await res.json().catch(() => ({}));
+      const json = await res.json().catch(() => null);
       if (!res.ok) {
-        if (json.errors) setErrors(json.errors);
-        throw new Error(json.message || "Something went wrong.");
+        if (json?.errors) setErrors(json.errors);
+        setFailure(json?.message || "Something went wrong on our side and your enquiry was not sent.");
+        setStatus("error");
+      } else {
+        form.reset();
+        setStatus("success");
       }
-      form.reset();
-      setStatus("success");
-    } catch (err) {
-      setServerMessage(err instanceof Error ? err.message : "Something went wrong.");
+    } catch {
+      setFailure("We could not reach our server. Check your internet connection and try again.");
       setStatus("error");
+    } finally {
+      sendingRef.current = false;
+      requestAnimationFrame(() => resultRef.current?.focus());
     }
   }
 
+  const sending = status === "sending";
+  const a11y = (field: keyof ContactInput) => ({
+    "aria-invalid": errors[field] ? true : undefined,
+    "aria-describedby": errors[field] ? `${field}-error` : undefined,
+  });
+
   if (status === "success") {
     return (
-      <div role="status" className="mt-8 rounded-xl border border-green-200 bg-green-50 p-6">
-        <h3 className="text-lg font-semibold text-green-900">Thank you, your message has been sent.</h3>
-        <p className="mt-2 text-green-900">
-          We have emailed you a confirmation and will get back to you within 3 business days.
+      <div ref={resultRef} tabIndex={-1} role="status" className="mt-8 border-l-4 border-success bg-surface p-6 outline-none">
+        <h2 className="text-xl">Thank you. Your enquiry has been sent.</h2>
+        <p className="mt-2">
+          We have emailed you a confirmation with a copy of your message. We will reply within {siteConfig.replyTime}.
         </p>
-        <button type="button" onClick={() => setStatus("idle")} className="mt-4 font-semibold text-green-900 underline">
-          Send another message
+        <button type="button" onClick={() => setStatus("idle")} className="link mt-4">
+          Send another enquiry
         </button>
       </div>
     );
   }
 
-  const sending = status === "sending";
-  const a11y = (field: keyof ContactErrors) => ({
-    "aria-invalid": errors[field] ? true : undefined,
-    "aria-describedby": errors[field] ? `${field}-error` : undefined,
-  });
-
   return (
-    <form onSubmit={onSubmit} noValidate className="mt-8 space-y-6">
-      {/* Honeypot: hidden from people and assistive tech; bots tend to fill it in. */}
+    <form onSubmit={onSubmit} noValidate className="mt-8 space-y-6" aria-describedby="required-note">
+      <p id="required-note" className="text-sm text-muted">All fields are required unless marked optional.</p>
+
+      {/* Honeypot: hidden from people and assistive technology. Bots tend to fill it in. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label htmlFor="website">Leave this field empty</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label htmlFor="name" className="text-sm font-medium text-slate-900">Name *</label>
-          <input id="name" name="name" type="text" autoComplete="name" required maxLength={100} className={inputClass} {...a11y("name")} />
-          <FieldError id="name-error" message={errors.name} />
-        </div>
-        <div>
-          <label htmlFor="email" className="text-sm font-medium text-slate-900">Email *</label>
-          <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} className={inputClass} {...a11y("email")} />
-          <FieldError id="email-error" message={errors.email} />
-        </div>
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label htmlFor="phone" className="text-sm font-medium text-slate-900">Phone <span className="font-normal text-slate-600">(optional)</span></label>
-          <input id="phone" name="phone" type="tel" autoComplete="tel" maxLength={25} className={inputClass} {...a11y("phone")} />
-          <FieldError id="phone-error" message={errors.phone} />
-        </div>
-        <div>
-          <label htmlFor="organization" className="text-sm font-medium text-slate-900">Business / organization name *</label>
-          <input id="organization" name="organization" type="text" autoComplete="organization" required maxLength={150} className={inputClass} {...a11y("organization")} />
-          <FieldError id="organization-error" message={errors.organization} />
-        </div>
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label htmlFor="businessType" className="text-sm font-medium text-slate-900">Type of business *</label>
-          <select id="businessType" name="businessType" required defaultValue="" className={inputClass} {...a11y("businessType")}>
-            <option value="" disabled>Select your business type</option>
-            {businessTypeOptions.map((o) => <option key={o}>{o}</option>)}
-          </select>
-          <FieldError id="businessType-error" message={errors.businessType} />
-        </div>
-        <div>
-          <label htmlFor="service" className="text-sm font-medium text-slate-900">Service interested in *</label>
-          <select id="service" name="service" required defaultValue="" className={inputClass} {...a11y("service")}>
-            <option value="" disabled>Select a service</option>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <Field id="name" label="Your name" error={errors.name}>
+          <input id="name" name="name" type="text" autoComplete="name" maxLength={100} className="field" {...a11y("name")} />
+        </Field>
+        <Field id="email" label="Email" error={errors.email}>
+          <input id="email" name="email" type="email" autoComplete="email" maxLength={254} className="field" {...a11y("email")} />
+        </Field>
+        <Field id="phone" label="Phone" hint="(optional, include your country code)" error={errors.phone}>
+          <input id="phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" maxLength={40} placeholder="+44 20 7946 0958" className="field" {...a11y("phone")} />
+        </Field>
+        <Field id="organization" label="Business or organization" error={errors.organization}>
+          <input id="organization" name="organization" type="text" autoComplete="organization" maxLength={150} className="field" {...a11y("organization")} />
+        </Field>
+        <Field id="industry" label="Industry or type of business" error={errors.industry}>
+          <input id="industry" name="industry" type="text" maxLength={100} placeholder="For example: online store, school, logistics" className="field" {...a11y("industry")} />
+        </Field>
+        <Field id="service" label="Service you are interested in" error={errors.service}>
+          <select id="service" name="service" defaultValue="" className="field" {...a11y("service")}>
+            <option value="" disabled>Choose one</option>
             {serviceOptions.map((o) => <option key={o}>{o}</option>)}
           </select>
-          <FieldError id="service-error" message={errors.service} />
-        </div>
+        </Field>
       </div>
 
-      <div>
-        <label htmlFor="message" className="text-sm font-medium text-slate-900">Message *</label>
+      <Field id="message" label="About your project" error={errors.message}>
         <textarea
           id="message"
           name="message"
           rows={6}
-          required
           maxLength={5000}
-          placeholder="Tell us about your business and what you would like to achieve: more bookings, more clients, less paperwork…"
-          className={inputClass}
+          placeholder="What do you want to build or change, and why now?"
+          className="field resize-y"
           {...a11y("message")}
         />
-        <FieldError id="message-error" message={errors.message} />
-      </div>
+      </Field>
 
       {status === "error" && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          {serverMessage} Please try again, or email us directly.
+        <div ref={resultRef} tabIndex={-1} role="alert" className="border-l-4 border-danger bg-surface p-4 outline-none">
+          <p className="font-semibold text-ink">Your enquiry was not sent.</p>
+          <p className="mt-1">{failure}</p>
+          <p className="mt-1">
+            Your answers are still in the form, so you can try again. You can also email us at{" "}
+            <a href={`mailto:${siteConfig.email}`} className="link">{siteConfig.email}</a>.
+          </p>
         </div>
       )}
 
-      <button type="submit" disabled={sending} aria-disabled={sending} className="btn-primary w-full sm:w-auto">
-        {sending ? "Sending…" : "Send message"}
+      <button type="submit" disabled={sending} className="btn-primary w-full sm:w-auto">
+        {sending ? "Sending…" : status === "error" ? "Try again" : "Send enquiry"}
       </button>
     </form>
   );

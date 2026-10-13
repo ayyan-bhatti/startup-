@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { processSteps } from "@/content/process";
+import { processQuestions, processSteps } from "@/content/process";
 import { CtaSection } from "@/components/CtaSection";
 import { JsonLd } from "@/components/JsonLd";
-import { PageHero } from "@/components/PageHero";
+import { PageIntro } from "@/components/PageIntro";
 import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "How We Work: From First Call to Growth",
+  title: "Our software development process",
   description:
-    "Our six-step process for launching websites, apps, automation and clinic management software: Discovery, Design, Development, Testing, Launch and Support.",
+    "How a project with us runs, step by step: Discovery, Design, Development, Testing, Launch and Support. What we do, what we need from you and what you get at each stage.",
   path: "/process",
 });
 
@@ -16,41 +16,64 @@ export default function ProcessPage() {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Process", path: "/process" }])} />
-      <PageHero
+      <PageIntro
         crumb="Process"
-        eyebrow="How we work"
-        title="How we work: six clear steps to launch and grow"
-        intro="A simple, transparent process that keeps you in control, from the first conversation to long after launch."
+        title="Our software development process"
+        lead="Every project follows the same six steps, whether it is a small website or a large system. For each step you can see what we do, what we need from you, and what you have at the end."
       />
 
-      <section aria-label="Process steps" className="py-20">
-        <ol className="container-page relative space-y-10">
+      <section aria-label="The six steps" className="py-12 sm:py-16">
+        <ol className="container-page">
           {processSteps.map((step, i) => (
-            <li key={step.title} className="grid gap-4 rounded-xl border border-slate-200 p-6 sm:grid-cols-[4rem_1fr] sm:p-8">
-              <span
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-lg font-bold text-white"
-                aria-hidden="true"
-              >
-                {i + 1}
-              </span>
+            <li key={step.title} className="grid grid-cols-1 gap-4 border-b border-line py-8 first:pt-0 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
               <div>
-                <h2 className="text-2xl font-bold">
-                  <span className="sr-only">Step {i + 1}: </span>
-                  {step.title}
-                </h2>
-                <p className="mt-1 font-medium text-slate-900">{step.summary}</p>
-                <p className="mt-3 leading-7">{step.description}</p>
+                <p className="text-sm text-muted">Step {i + 1} of {processSteps.length}</p>
+                <h2 className="mt-1 text-2xl">{step.title}</h2>
+                <p className="mt-2">{step.summary}</p>
               </div>
+              <dl className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div className="min-w-0">
+                  <dt className="text-sm font-semibold text-ink">What we do</dt>
+                  <dd className="mt-1">{step.we}</dd>
+                </div>
+                <div className="min-w-0">
+                  <dt className="text-sm font-semibold text-ink">What we need from you</dt>
+                  <dd className="mt-1">{step.you}</dd>
+                </div>
+                <div className="min-w-0">
+                  <dt className="text-sm font-semibold text-ink">What you get</dt>
+                  <dd className="mt-1">{step.output}</dd>
+                </div>
+              </dl>
             </li>
           ))}
         </ol>
-        <p className="container-page mt-12">
-          The same steps apply to all of our{" "}
-          <Link href="/services" className="font-semibold text-accent hover:underline">services for clinics, law firms and gyms</Link>.
-        </p>
       </section>
 
-      <CtaSection title="Ready for your discovery call?" />
+      <section aria-labelledby="questions-heading" className="border-t border-line py-16 sm:py-20">
+        <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[16rem_minmax(0,1fr)]">
+          <h2 id="questions-heading" className="text-2xl">Common questions</h2>
+          <dl className="max-w-3xl space-y-8">
+            {processQuestions.map((item) => (
+              <div key={item.q}>
+                <dt className="text-lg font-semibold text-ink">{item.q}</dt>
+                <dd className="mt-2">{item.a}</dd>
+              </div>
+            ))}
+            <div>
+              <dt className="text-lg font-semibold text-ink">Which services does this apply to?</dt>
+              <dd className="mt-2">
+                All of them. <Link href="/services" className="link">See the full list of services</Link>.
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <CtaSection
+        title="Book a Discovery call"
+        text="Discovery is where we work out what to build and what it will cost. You are under no obligation to continue afterwards."
+      />
     </>
   );
 }
